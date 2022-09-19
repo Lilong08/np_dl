@@ -177,7 +177,7 @@ def pad(input, pad, mode='constant', value=None):
     value = value if value is not None else 0.
     p = len(pad)
     res = None
-    assert p in (2, 4), 'p should in (2, 4)'
+    assert p in (2, 4), 'p should be in (2, 4)'
     if p == 2:
         l, r = pad
         res = np.zeros((n, c, h_in, w_in + l + r)) + value
