@@ -282,3 +282,69 @@ def conv2d(input, weight, bias, stride=1, padding=0, dialition=1, groups=1):
 #     print('torch time consume ', time.time() - s)
 #     print(np.array(f) == out)
 
+
+
+def maxpool2d(input, k_size, padding=(0, 0), stride=None):
+    '''
+    :param input: (k, c, h_in, w_in)
+    :param k_size: (k_h, k_w)
+    :param padding:
+    :param stride:
+    :return:
+    '''
+
+    n, c = input.shape[:2]
+    h_in, w_in = input.shape[2:]
+    k_h, k_w = k_size
+    stride = stride if stride is not None else 1
+
+    h_out = (h_in + 2 * padding[0] - k_h) // stride + 1
+    w_out = (w_in + 2 * padding[1] - k_w) // stride + 1
+
+    output = np.empty((n, c, h_out, w_out))
+    for i in range(h_out):
+        for j in range(w_out):
+            output[:, :, i, j] = np.max(input[:, :, i*stride : stride*i + k_h,
+                                        j*stride: j*stride + k_w], axis=(2, 3))
+
+    return output
+
+# if __name__ == '__main__':
+#     d = np.random.random((1, 3, 5, 5))
+#     a = F.max_pool2d(torch.from_numpy(d), (3, 3))
+#     b = maxpool2d(d, k_size=(3,3), stride=5)
+#     print(a)
+#     print(b)
+
+
+def avgpool2d(input, k_size, padding=(0, 0), stride=None):
+    '''
+    :param input: (k, c, h_in, w_in)
+    :param k_size: (k_h, k_w)
+    :param padding:
+    :param stride:
+    :return:
+    '''
+
+    n, c = input.shape[:2]
+    h_in, w_in = input.shape[2:]
+    k_h, k_w = k_size
+    stride = stride if stride is not None else 1
+
+    h_out = (h_in + 2 * padding[0] - k_h) // stride + 1
+    w_out = (w_in + 2 * padding[1] - k_w) // stride + 1
+
+    output = np.empty((n, c, h_out, w_out))
+    for i in range(h_out):
+        for j in range(w_out):
+            output[:, :, i, j] = np.mean(input[:, :, i*stride : stride*i + k_h,
+                                        j*stride: j*stride + k_w], axis=(2, 3))
+
+    return output
+
+# if __name__ == '__main__':
+#     d = np.random.random((1, 3, 5, 5))
+#     a = F.avg_pool2d(torch.from_numpy(d), (3, 3))
+#     b = avgpool2d(d, k_size=(3,3), stride=5)
+#     print(a)
+#     print(b)
